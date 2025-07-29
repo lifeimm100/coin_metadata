@@ -1,19 +1,18 @@
 #[test_only]
 module coin_metadata::metadata_tests {
     use sui::test_scenario::{Self, Scenario};
-    use sui::tx_context;
     use std::string;
-    use coin_metadata::metadata::{Self, CoinCustomMetadata};
+    use coin_metadata::metadata::Self;
 
 
 const ADMIN: address = @0xAD;
-    // Test helper to create a test scenario with initial setup
-    fun create_test_scenario(): Scenario {
-        let mut scenario = test_scenario::begin(ADMIN);
-        test_scenario::next_tx(&mut scenario, ADMIN);
-        metadata::test_init(test_scenario::ctx(&mut scenario));
-        scenario
-    }
+    // // Test helper to create a test scenario with initial setup
+    // fun create_test_scenario(): Scenario {
+    //     let mut scenario = test_scenario::begin(ADMIN);
+    //     test_scenario::next_tx(&mut scenario, ADMIN);
+    //     metadata::test_init(test_scenario::ctx(&mut scenario));
+    //     scenario
+    // }
 
     fun setup(s: &mut Scenario) {
         test_scenario::next_tx(s, ADMIN);

@@ -4,8 +4,6 @@
 module coin_metadata::metadata {
     use std::string;
     use std::ascii;
-    use sui::object::{Self, UID};
-    use sui::tx_context::{Self, TxContext};
 
     public struct CoinCustomMetadata<phantom T> has key, store {
         id: UID,
