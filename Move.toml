@@ -1,7 +1,7 @@
 [package]
 name = "coin_metadata"
 edition = "2024.beta" # edition = "legacy" to use legacy (pre-2024) Move
-#published-at = "0xd28d89ef5a541b77418cd046b21ffa59956cea474906b83deaa7c9002f914406"
+published-at = "0x07bf8252f080ac6d5db06c267040a84a74b6db8fc9b0e3042bf33de97a82a5b5"
 
 [dependencies]
 SuiSystem={git ="https://github.com/hellokittyboy-code/obc", subdir ="crates/sui-framework/packages/sui-system", rev="develop_v1.24.0_4_test"}
