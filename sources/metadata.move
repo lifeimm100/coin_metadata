@@ -4,6 +4,8 @@
 module coin_metadata::metadata {
     use std::string;
     use std::ascii;
+    use sui::object::{Self, UID};
+    use sui::tx_context::{Self, TxContext};
 
     public struct CoinCustomMetadata<phantom T> has key, store {
         id: UID,
@@ -14,6 +16,12 @@ module coin_metadata::metadata {
     public struct MetadataUpdateEvent has copy, drop {
         coin_type: ascii::String,
         new_json: string::String
+    }
+
+    #[test_only]
+    public fun test_init(ctx: &mut TxContext) {
+        let metadata = new<u64>(string::utf8(b"{\"name\": \"Test Coin\"}"), ctx);
+        sui::transfer::transfer(metadata, tx_context::sender(ctx));
     }
 
     /// Create a new CoinCustomMetadata object

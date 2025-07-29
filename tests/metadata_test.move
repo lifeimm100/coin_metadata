@@ -5,44 +5,44 @@ module coin_metadata::metadata_tests {
     use std::string;
     use coin_metadata::metadata::{Self, CoinCustomMetadata};
 
+
+const ADMIN: address = @0xAD;
     // Test helper to create a test scenario with initial setup
     fun create_test_scenario(): Scenario {
-        let mut scenario = test_scenario::begin(@0x1);
-        test_scenario::next_tx(&mut scenario, @0x1);
+        let mut scenario = test_scenario::begin(ADMIN);
+        test_scenario::next_tx(&mut scenario, ADMIN);
+        metadata::test_init(test_scenario::ctx(&mut scenario));
         scenario
+    }
+
+    fun setup(s: &mut Scenario) {
+        test_scenario::next_tx(s, ADMIN);
+        metadata::test_init(test_scenario::ctx(s));
+        test_scenario::next_tx(s, ADMIN);
     }
 
     #[test]
     fun test_create_metadata() {
-        let mut scenario = create_test_scenario();
-        let ctx = test_scenario::ctx(&mut scenario);
-        
-        // Test creating new metadata
+        let mut s = test_scenario::begin(ADMIN);
+        setup(&mut s);
+        let metadata = test_scenario::take_from_sender<metadata::CoinCustomMetadata<u64>>(&s);
         let json = string::utf8(b"{\"name\": \"Test Coin\"}");
-        let metadata = metadata::new<u64>(json, ctx);
-        
-        assert!(metadata.json == json, 0);
-        
-        test_scenario::return_shared(metadata);
-        test_scenario::end(scenario);
+        assert!(metadata::json(&metadata) == json, 0);
+        test_scenario::return_to_sender(&s, metadata);
+        test_scenario::end(s);
     }
 
     #[test]
     fun test_update_metadata() {
-        let mut scenario = create_test_scenario();
-        let ctx = test_scenario::ctx(&mut scenario);
-        
-        // Create initial metadata
+        let mut s = test_scenario::begin(ADMIN);
+        setup(&mut s);
+        let mut metadata = test_scenario::take_from_sender<metadata::CoinCustomMetadata<u64>>(&s);
         let json = string::utf8(b"{\"name\": \"Test Coin\"}");
-        let mut metadata = metadata::new<u64>(json, ctx);
-        
-        // Update metadata
-        let new_json = string::utf8(b"{\"name\": \"Updated Test Coin\"}");
-        metadata::update_metadata(&mut metadata, new_json, ctx);
-        
-        assert!(metadata.json == new_json, 0);
-        
-        test_scenario::return_shared(metadata);
-        test_scenario::end(scenario);
+        assert!(metadata::json(&metadata) == json, 0);
+        let json_new = string::utf8(b"{\"name\": \"Updated Test Coin\"}");
+        metadata::update_metadata(&mut metadata, json_new, test_scenario::ctx(&mut s));
+        assert!(metadata::json(&metadata) == json_new, 1);
+        test_scenario::return_to_sender(&s, metadata);
+        test_scenario::end(s);
     }
 }
